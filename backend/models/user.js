@@ -8,18 +8,17 @@ const UserSchema= new mongoose.Schema({
     },
     LastName:{
         type:String,
-        required:true,
         unique:true
     },
-    Email:{
+    email:{
         type:String,
         required:true,
         unique:true
     },
     role:{
         type:String,
-        required:true,
-         unique:true
+        enum:["user","admin"],
+        
     },
     password:{
         type:String,
@@ -28,7 +27,6 @@ const UserSchema= new mongoose.Schema({
     },
     solvedProblem:{
         type:Array,
-        required:true,
     }
 })
 
