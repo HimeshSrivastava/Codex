@@ -13,9 +13,34 @@ export const handleRegister =async(req,res)=>{
          validate(req.body);
          
          req.body.password=await bcrypt.hash(password,10);
+         req.body.role="user";
 
-         await user.create(req.body);
-         const token = jwt.sign({email},process.env.JWT_KEY,{expiresIn:60*60});
+         const result= await user.create(req.body);
+         const token = jwt.sign({id:result._id,email,role:"user"},process.env.JWT_KEY,{expiresIn:60*60});
+
+         res.status(201).json({
+         message:"user registered successfully",
+         token
+         })
+    } catch (error) {
+        console.error("error occured",error);
+    }
+  
+}
+export const handleadmin =async(req,res)=>{
+    try {
+        if(req.result.role!="admin"){
+           return res.status(401).json("user is not authorised");
+        }
+         const {firstName,email,password}=req.body;
+         validate(req.body);
+
+         
+         req.body.password=await bcrypt.hash(password,10);
+         
+
+         const result=await user.create(req.body);
+         const token = jwt.sign({id:result._id,email,role:req.body.role},process.env.JWT_KEY,{expiresIn:60*60});
 
          res.status(201).json({
          message:"user registered successfully",
@@ -39,7 +64,7 @@ export const handleLogin =async(req,res)=>{
        
       if(!ans) throw new Error("invalid credential");
 
-      const token = jwt.sign({email:req.body.email},process.env.JWT_KEY,{expiresIn:60*60});
+      const token = jwt.sign({email,id:userDetail._id,role:userDetail.role},process.env.JWT_KEY,{expiresIn:60*60});
 
       res.status(200).json({
          message:"user logged in successfully",
@@ -49,4 +74,9 @@ export const handleLogin =async(req,res)=>{
   } catch (error) {
      console.error("error occured",error);
   }
+}
+export const handlelogout =(req,res)=>{
+    res.json({
+        message:"logout successfully"
+    })
 }

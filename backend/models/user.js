@@ -4,11 +4,9 @@ const UserSchema= new mongoose.Schema({
     firstName:{
         type:String,
         required:true,
-        unique:true
     },
-    LastName:{
+    lastName:{
         type:String,
-        unique:true
     },
     email:{
         type:String,
@@ -18,12 +16,11 @@ const UserSchema= new mongoose.Schema({
     role:{
         type:String,
         enum:["user","admin"],
-        
+        default:"user"
     },
     password:{
         type:String,
         required:true,
-        unique:true
     },
     solvedProblem:{
         type:Array,
